@@ -1,0 +1,5 @@
+grafana:
+  adminPassword: admin123
+prometheus:
+  prometheusSpec:
+    retention: 24h
