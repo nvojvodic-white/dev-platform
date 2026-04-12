@@ -36,7 +36,7 @@ module "db" {
   backup_window      = "03:00-06:00"
 
   # Simplified for interview repo lifecycle limits
-  backup_retention_period = 7
+  backup_retention_period = 0
   deletion_protection     = false
   skip_final_snapshot     = true
 }
