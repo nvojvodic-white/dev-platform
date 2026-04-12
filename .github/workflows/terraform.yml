@@ -38,7 +38,7 @@ jobs:
       run: terraform plan -no-color
 
     - name: Setup Infracost
-      uses: infracost/actions/setup@v2
+      uses: infracost/actions/setup@v3
       with:
         api-key: ${{ secrets.INFRACOST_API_KEY }}
 
@@ -46,7 +46,7 @@ jobs:
       run: infracost breakdown --path=terraform --format=json --out-file=/tmp/infracost.json
 
     - name: Post Infracost Comment
-      uses: infracost/actions/comment@v2
+      uses: infracost/actions/comment@v3
       if: github.event_name == 'pull_request'
       with:
         path: /tmp/infracost.json
