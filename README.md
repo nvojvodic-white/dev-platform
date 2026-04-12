@@ -5,7 +5,7 @@ A production-grade Internal Developer Platform built on AWS, demonstrating infra
 ## Architecture
 
 - **AWS VPC** — Multi-AZ network with public/private subnets, NAT Gateway, and least-privilege routing
-- **EKS** — Managed Kubernetes cluster (v1.33) with auto-scaling node groups
+- **EKS** — Managed Kubernetes cluster (v1.34) with auto-scaling node groups
 - **Argo CD & Rollouts** — GitOps continuous & progressive delivery (Canary deployments)
 - **Prometheus & SLOs** — Mathematical Error Budget tracking and full observability stack
 - **Remote Terraform State** — S3 backend with DynamoDB locking for team collaboration
