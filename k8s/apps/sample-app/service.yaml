@@ -3,10 +3,13 @@ kind: Service
 metadata:
   name: sample-app
   namespace: default
+  labels:
+    app: sample-app
+    environment: dev
 spec:
   selector:
     app: sample-app
   ports:
   - port: 80
-    targetPort: 80
+    targetPort: 8080
   type: ClusterIP

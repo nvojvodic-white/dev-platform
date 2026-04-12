@@ -3,22 +3,33 @@ kind: Deployment
 metadata:
   name: sample-app
   namespace: default
+  labels:
+    app: sample-app
+    environment: dev
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: sample-app
+      environment: dev
   template:
     metadata:
       labels:
         app: sample-app
+        environment: dev
     spec:
       serviceAccountName: sample-app
       containers:
       - name: sample-app
-        image: nginx:alpine
+        image: nginxinc/nginx-unprivileged:alpine
         ports:
-        - containerPort: 80
+        - containerPort: 8080
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 101
+        volumeMounts:
+        - name: dashboard
+          mountPath: /usr/share/nginx/html
         resources:
           requests:
             memory: "64Mi"
@@ -26,3 +37,7 @@ spec:
           limits:
             memory: "128Mi"
             cpu: "100m"
+      volumes:
+      - name: dashboard
+        configMap:
+          name: platform-dashboard
