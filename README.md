@@ -6,6 +6,9 @@ A production-grade Internal Developer Platform built on AWS, demonstrating infra
 
 ![Platform Architecture](docs/assets/architecture.png)
 
+## Platform Dashboard
+
+![Platform Dashboard](docs/assets/dashboard.png)
 
 - **AWS VPC** — Multi-AZ network with public/private subnets, NAT Gateway, and least-privilege routing
 - **EKS** — Managed Kubernetes cluster (v1.35) with auto-scaling node groups
