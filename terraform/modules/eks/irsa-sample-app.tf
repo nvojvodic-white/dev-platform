@@ -10,6 +10,16 @@ data "aws_iam_policy_document" "sample_app" {
       "arn:aws:s3:::dev-platform-tfstate-375976227140/*"
     ]
   }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "rds-db:connect"
+    ]
+    resources = [
+      "arn:aws:rds-db:*:*:dbuser:*/sampleapp"
+    ]
+  }
 }
 
 resource "aws_iam_policy" "sample_app" {
