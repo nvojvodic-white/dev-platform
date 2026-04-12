@@ -12,7 +12,10 @@ A production-grade Internal Developer Platform built on AWS, demonstrating infra
 - **Network Policies** — Default-deny with explicit allow rules per service
 - **Trivy & Checkov** — IaC and container security scanning on every push
 - **Infracost** — Cloud cost estimation on Pull Requests
+- **Karpenter** — Dynamic right-sized Spot/On-Demand node provisioning
+- **RDS PostgreSQL** — Passwordless database authentication via IRSA (IAM Roles for Service Accounts)
 - **Golden Path** — Automated scaffolding script for new microservices
+- **Incident Runbooks** — Enterprise-grade SEV-1/2/3 incident response documentation
 
 ## CI/CD Pipeline
 
@@ -33,6 +36,8 @@ A production-grade Internal Developer Platform built on AWS, demonstrating infra
 | Monitoring & SLOs | Prometheus + Grafana |
 | Security Scanning | Trivy + Checkov |
 | Cost Optimization | Infracost |
+| Node Autoscaling | Karpenter (Spot + On-Demand) |
+| Database | RDS PostgreSQL (Passwordless IRSA) |
 | Developer Tooling | Custom Bash Scaffolding |
 | CI/CD | GitHub Actions |
 | Cloud Provider | AWS |
@@ -48,18 +53,21 @@ dev-platform/
 ├── terraform/
 │   ├── modules/
 │   │   ├── vpc/           # VPC, subnets, NAT gateway
-│   │   └── eks/           # EKS cluster, node groups, access
+│   │   ├── eks/           # EKS cluster, node groups, Karpenter, IRSA
+│   │   └── rds/           # PostgreSQL with IAM authentication
 │   ├── backend.tf         # S3 remote state
 │   ├── main.tf
 │   ├── variables.tf
 │   └── provider.tf
 ├── k8s/
 │   ├── apps/
-│   │   └── sample-app/    # Deployed via Argo CD GitOps
-│   ├── monitoring/        # Prometheus + Grafana values
+│   │   └── sample-app/    # Argo Rollout (Canary) via GitOps
+│   ├── infrastructure/
+│   │   └── karpenter-nodepool.yaml  # Spot/On-Demand NodePool
+│   ├── monitoring/        # Prometheus + Grafana + SLO PrometheusRules
 │   └── network-policies/  # Default deny + allow rules
 └── docs/
-└── runbook.md
+    └── runbook.md         # SEV-1/2/3 Incident Response Protocol
 
 ## How to Deploy
 
@@ -96,9 +104,29 @@ helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
   -f k8s/monitoring/values.yaml
 ```
 
-### 5. Apply Network Policies
+### 5. Install Karpenter
+```bash
+kubectl create namespace karpenter
+helm install karpenter oci://public.ecr.aws/karpenter/karpenter \
+  --namespace karpenter \
+  --set settings.clusterName=dev-platform-dev
+kubectl apply -f k8s/infrastructure/karpenter-nodepool.yaml
+```
+
+### 6. Apply Network Policies
 ```bash
 kubectl apply -f k8s/network-policies/
+```
+
+### 7. Access Live Observability
+```bash
+# Grafana dashboard (real-time cluster metrics + SLOs)
+kubectl port-forward svc/kube-prometheus-stack-grafana -n monitoring 3000:80
+# Open http://localhost:3000 — admin/admin123
+
+# Argo CD GitOps UI
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+# Open https://localhost:8080
 ```
 
 ## Key Concepts Demonstrated
@@ -115,3 +143,7 @@ kubectl apply -f k8s/network-policies/
 - Golden Path developer experience via templated service scaffolding
 - Multi-AZ high availability architecture
 - Least-privilege IAM and IRSA for workload identity
+- Karpenter dynamic node provisioning with Spot/On-Demand balancing
+- Passwordless RDS database access via IAM STS tokens (IRSA)
+- Enterprise-grade incident response via formal SEV-level runbooks
+- DORA metrics tracking (Elite performer tier)
