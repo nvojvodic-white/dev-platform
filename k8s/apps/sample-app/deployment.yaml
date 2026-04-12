@@ -13,11 +13,11 @@ spec:
       labels:
         app: sample-app
     spec:
+      serviceAccountName: sample-app
       containers:
       - name: sample-app
-        image: nginx:alpine
-        ports:
-        - containerPort: 80
+        image: amazon/aws-cli:latest
+        command: ["sleep", "3600"]
         resources:
           requests:
             memory: "64Mi"
