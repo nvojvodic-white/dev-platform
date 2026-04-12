@@ -14,12 +14,17 @@ module "eks" {
     main = {
       instance_types = ["m7i-flex.large"]
       min_size       = 1
-      max_size       = 2
+      max_size       = 4
       desired_size   = 1
 
       labels = {
         Environment = var.environment
         Project     = var.project_name
+      }
+
+      tags = {
+        "k8s.io/cluster-autoscaler/enabled"                            = "true"
+        "k8s.io/cluster-autoscaler/${var.project_name}-${var.environment}" = "owned"
       }
     }
   }
@@ -28,5 +33,21 @@ module "eks" {
     Environment = var.environment
     Project     = var.project_name
     ManagedBy   = "terraform"
+  }
+}
+
+resource "aws_eks_access_entry" "admin" {
+  cluster_name  = module.eks.cluster_name
+  principal_arn = "arn:aws:iam::375976227140:user/terraform-admin"
+  type          = "STANDARD"
+}
+
+resource "aws_eks_access_policy_association" "admin" {
+  cluster_name  = module.eks.cluster_name
+  principal_arn = "arn:aws:iam::375976227140:user/terraform-admin"
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+
+  access_scope {
+    type = "cluster"
   }
 }
