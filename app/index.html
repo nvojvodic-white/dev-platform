@@ -172,6 +172,61 @@ h1 { font-size: 36px; font-weight: 700; background: linear-gradient(to right, #f
 /* Live Telemetry Animation styling for text changes */
 .changed { color: var(--accent-color) !important; text-shadow: 0 0 10px var(--accent-glow); transition: 0.1s; }
 
+/* DORA grid */
+.dora-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 1rem; }
+.dora-card {
+  background: rgba(59, 130, 246, 0.05);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 12px; padding: 1.2rem;
+  border-left: 3px solid #3b82f6;
+  transition: all 0.2s;
+}
+.dora-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -10px rgba(59,130,246,0.3); border-color: rgba(59, 130, 246, 0.4); }
+.dora-title { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 8px; display:flex; align-items:center; gap:6px; }
+.dora-title i { font-size: 14px; color: #3b82f6; }
+.dora-val { font-size: 24px; font-weight: 700; color: #fff; display: flex; align-items: baseline; gap: 4px; }
+.dora-unit { font-size: 13px; font-weight: 400; color: var(--text-muted); }
+.dora-elite { font-size: 10px; color: var(--status-healthy); background: rgba(16, 185, 129, 0.1); padding: 2px 8px; border-radius: 10px; border: 1px solid rgba(16,185,129,0.2); margin-top: 10px; display: inline-flex; align-items:center; gap:4px; font-weight:600;}
+
+/* Service Mesh */
+.mesh-container {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 0; margin: 1rem 0;
+  position: relative;
+}
+.mesh-node {
+  background: var(--bg-card); border: 1px solid var(--border-light);
+  padding: 1rem; border-radius: 16px; width: 100px; height: 100px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  position: relative; z-index: 2;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.mesh-node:hover { border-color: rgba(255,255,255,0.3); transform: scale(1.05); box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px rgba(255,255,255,0.1); }
+.mesh-node i { font-size: 28px; color: #fff; margin-bottom: 8px; }
+.mesh-node span { font-size: 11px; color: var(--text-muted); text-align: center; line-height: 1.2; font-weight: 500; }
+
+.mesh-edge {
+  flex-grow: 1; height: 2px; background: rgba(255,255,255,0.1);
+  position: relative; z-index: 1; display: flex; align-items: center; overflow: hidden; margin: 0 -10px;
+}
+.mesh-packet {
+  width: 6px; height: 6px; background: var(--status-healthy);
+  border-radius: 50%; box-shadow: 0 0 10px var(--status-healthy);
+  position: absolute; left: 0;
+  animation: flowPacket 1.5s infinite linear;
+}
+.mesh-packet.db { background: #8b5cf6; box-shadow: 0 0 10px #8b5cf6; animation-duration: 2s; animation-delay: 0.5s; }
+.mesh-packet.reverse { animation-direction: reverse; background: #3b82f6; box-shadow: 0 0 10px #3b82f6; animation-duration: 1.8s; }
+
+@keyframes flowPacket {
+  0% { left: 0; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
+
 </style>
 </head>
 <body>
@@ -204,6 +259,62 @@ h1 { font-size: 36px; font-weight: 700; background: linear-gradient(to right, #f
       <div class="card-label"><i class="ph ph-shield-check"></i> Security Score</div>
       <div class="card-value">100<span class="card-unit">%</span></div>
       <div class="card-sub">Gatekeeper + Checkov</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><i class="ph ph-trend-up"></i> DORA Delivery Metrics</div>
+    <div class="dora-grid">
+      <div class="dora-card">
+        <div class="dora-title"><i class="ph ph-rocket"></i> Deploy Freq</div>
+        <div class="dora-val">12 <span class="dora-unit">/ day</span></div>
+        <div class="dora-elite"><i class="ph ph-star-fill"></i> Elite</div>
+      </div>
+      <div class="dora-card">
+        <div class="dora-title"><i class="ph ph-clock-countdown"></i> Lead Time</div>
+        <div class="dora-val">45 <span class="dora-unit">mins</span></div>
+        <div class="dora-elite"><i class="ph ph-star-fill"></i> Elite</div>
+      </div>
+      <div class="dora-card">
+        <div class="dora-title"><i class="ph ph-lifebuoy"></i> MTTR</div>
+        <div class="dora-val">12 <span class="dora-unit">mins</span></div>
+        <div class="dora-elite"><i class="ph ph-star-fill"></i> Elite</div>
+      </div>
+      <div class="dora-card">
+        <div class="dora-title"><i class="ph ph-warning-circle"></i> Failure Rate</div>
+        <div class="dora-val">0.8 <span class="dora-unit">%</span></div>
+        <div class="dora-elite"><i class="ph ph-star-fill"></i> Elite</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><i class="ph ph-graph"></i> Live Service Mesh Topology</div>
+    <div class="mesh-container">
+      <div class="mesh-node">
+        <i class="ph ph-globe"></i>
+        <span>AWS ALB<br>Ingress</span>
+      </div>
+      
+      <div class="mesh-edge">
+        <div class="mesh-packet"></div>
+        <div class="mesh-packet" style="animation-delay: 0.7s;"></div>
+      </div>
+      
+      <div class="mesh-node">
+        <i class="ph ph-rocket-launch" style="color: #3b82f6;"></i>
+        <span>Argo Rollout<br>Pod</span>
+      </div>
+      
+      <div class="mesh-edge">
+        <div class="mesh-packet db"></div>
+        <div class="mesh-packet reverse"></div>
+      </div>
+      
+      <div class="mesh-node">
+        <i class="ph ph-database" style="color: #8b5cf6;"></i>
+        <span>PostgreSQL<br>RDS (IAM Auth)</span>
+      </div>
     </div>
   </div>
 
