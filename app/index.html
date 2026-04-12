@@ -3,70 +3,301 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>dev-platform</title>
+<title>dev-platform | Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fafafa;color:#111;padding:2rem;max-width:800px;margin:0 auto}
-.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:3px 10px;border-radius:20px;margin-bottom:12px;background:#dcfce7;color:#166534}
-.dot{width:7px;height:7px;border-radius:50%;background:#16a34a;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
-h1{font-size:28px;font-weight:600;margin-bottom:6px}
-.subtitle{font-size:15px;color:#555;line-height:1.6;margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid #e5e5e5}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:2rem}
-.card{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1rem 1.25rem}
-.card-label{font-size:12px;color:#888;margin-bottom:4px}
-.card-value{font-size:22px;font-weight:600}
-.card-sub{font-size:12px;color:#888;margin-top:2px}
-.section{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem}
-.section-title{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
-.component{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f0f0f0}
-.component:last-child{border-bottom:none}
-.comp-left{display:flex;align-items:center;gap:10px}
-.comp-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;background:#f5f5f5}
-.comp-name{font-size:14px;font-weight:500}
-.comp-desc{font-size:12px;color:#888}
-.status-pill{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;background:#dcfce7;color:#166534}
-.stack-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
-.stack-item{background:#f9f9f9;border-radius:8px;padding:8px 12px;font-size:13px}
-.stack-layer{font-size:11px;color:#888;margin-bottom:2px}
-.links{display:flex;gap:10px;margin-top:1.5rem;flex-wrap:wrap}
-.link-btn{font-size:13px;padding:8px 16px;border-radius:8px;border:1px solid #e5e5e5;color:#111;text-decoration:none;background:#fff}
+/* CSS Reset and variables */
+:root {
+  --bg-primary: #09090b;
+  --bg-card: rgba(24, 24, 27, 0.6);
+  --border-light: rgba(255, 255, 255, 0.08);
+  --text-main: #f4f4f5;
+  --text-muted: #a1a1aa;
+  --accent-color: #3b82f6; 
+  --accent-glow: rgba(59, 130, 246, 0.15);
+  --status-healthy: #10b981;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  line-height: 1.6;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Dynamic background gradient mesh */
+.bg-mesh {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  z-index: -1;
+  background: 
+    radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.1), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.1), transparent 25%);
+  animation: bgShift 15s ease-in-out infinite alternate;
+}
+
+@keyframes bgShift {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.1); }
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+}
+
+/* Header */
+.header { margin-bottom: 3rem; position: relative; }
+.status-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--status-healthy);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px; font-weight: 500;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  margin-bottom: 1.5rem;
+}
+.pulse-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--status-healthy);
+  box-shadow: 0 0 10px var(--status-healthy);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
+
+h1 { font-size: 36px; font-weight: 700; background: linear-gradient(to right, #fff, #a1a1aa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 12px; letter-spacing: -0.02em; }
+.subtitle { font-size: 16px; color: var(--text-muted); max-width: 600px; }
+
+/* Grid & Cards (Glassmorphism) */
+.metrics-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 3rem;
+}
+
+.glass-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5), 0 0 20px var(--accent-glow);
+}
+
+.card-label { font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;}
+.card-label i { font-size: 16px; color: #fff; }
+.card-value { font-size: 28px; font-weight: 600; color: #fff; display: flex; align-items: baseline; gap: 4px; }
+.card-unit { font-size: 14px; color: var(--text-muted); font-weight: 400; }
+.card-sub { font-size: 13px; color: var(--accent-color); margin-top: 6px; font-weight: 500; }
+
+/* Sections */
+.section {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+.section-title { font-size: 14px; color: #fff; font-weight: 600; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 8px; }
+
+/* Components List */
+.component {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border-light);
+  transition: background 0.2s;
+}
+.component:last-child { border-bottom: none; padding-bottom: 0; }
+.component:first-child { padding-top: 0; }
+.comp-left { display: flex; align-items: center; gap: 16px; }
+.comp-icon { 
+  width: 40px; height: 40px; border-radius: 10px; 
+  background: rgba(255, 255, 255, 0.05); 
+  display: flex; align-items: center; justify-content: center; 
+  font-size: 20px; color: #fff; 
+  border: 1px solid var(--border-light);
+}
+.comp-name { font-size: 15px; font-weight: 500; color: #fff; margin-bottom: 2px; }
+.comp-desc { font-size: 13px; color: var(--text-muted); }
+.status-pill {
+  font-size: 12px; padding: 4px 12px; border-radius: 20px; font-weight: 500;
+  background: rgba(16, 185, 129, 0.1); color: var(--status-healthy);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+/* Stack Tokens */
+.stack-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+.stack-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-light);
+  border-radius: 10px; padding: 12px;
+  transition: all 0.2s;
+}
+.stack-item:hover { background: rgba(255, 255, 255, 0.06); border-color: rgba(255,255,255,0.15); }
+.stack-layer { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 6px; }
+.stack-tool { font-size: 14px; font-weight: 500; color: #fff; }
+
+/* Links */
+.links { display: flex; gap: 12px; margin-top: 3rem; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 500;
+  text-decoration: none; transition: all 0.2s;
+  cursor: pointer;
+}
+.btn-primary { background: #fff; color: #000; }
+.btn-primary:hover { background: #e5e5e5; transform: translateY(-2px); }
+.btn-secondary { background: transparent; color: #fff; border: 1px solid var(--border-light); }
+.btn-secondary:hover { background: rgba(255, 255, 255, 0.05); transform: translateY(-2px); }
+
+/* Live Telemetry Animation styling for text changes */
+.changed { color: var(--accent-color) !important; text-shadow: 0 0 10px var(--accent-glow); transition: 0.1s; }
+
 </style>
 </head>
 <body>
-<div class="badge"><div class="dot"></div> All systems operational</div>
-<h1>dev-platform</h1>
-<p class="subtitle">Production-grade Internal Developer Platform on AWS. Built with Terraform, Kubernetes, and GitOps. All infrastructure is managed as code.</p>
-<div class="grid">
-<div class="card"><div class="card-label">Kubernetes version</div><div class="card-value">1.33</div><div class="card-sub">EKS managed</div></div>
-<div class="card"><div class="card-label">Cloud provider</div><div class="card-value">AWS</div><div class="card-sub">us-east-1</div></div>
-<div class="card"><div class="card-label">Node autoscaling</div><div class="card-value">1 - 4</div><div class="card-sub">Cluster Autoscaler</div></div>
-<div class="card"><div class="card-label">Backup retention</div><div class="card-value">7 days</div><div class="card-sub">Velero + S3</div></div>
+<div class="bg-mesh"></div>
+
+<div class="container">
+  <div class="header">
+    <div class="status-badge"><div class="pulse-dot"></div> <span>Platform Online</span></div>
+    <h1>dev-platform</h1>
+    <p class="subtitle">Production-grade Internal Developer Platform on AWS. Built with Terraform, Kubernetes, and GitOps. All infrastructure is managed as code.</p>
+  </div>
+
+  <div class="metrics-grid">
+    <div class="glass-card">
+      <div class="card-label"><i class="ph ph-cpu"></i> Node Provisioning</div>
+      <div class="card-value" id="karpenter-out">3 <span class="card-unit">nodes</span></div>
+      <div class="card-sub">Karpenter (Spot)</div>
+    </div>
+    <div class="glass-card">
+      <div class="card-label"><i class="ph ph-database"></i> Datastores</div>
+      <div class="card-value">Postgres</div>
+      <div class="card-sub">Passwordless IRSA</div>
+    </div>
+    <div class="glass-card">
+      <div class="card-label"><i class="ph ph-chart-line-up"></i> SLO Latency (p99)</div>
+      <div class="card-value"><span id="slo-lat">42</span> <span class="card-unit">ms</span></div>
+      <div class="card-sub">Target: &lt; 50ms</div>
+    </div>
+    <div class="glass-card">
+      <div class="card-label"><i class="ph ph-shield-check"></i> Security Score</div>
+      <div class="card-value">100<span class="card-unit">%</span></div>
+      <div class="card-sub">Gatekeeper + Checkov</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><i class="ph ph-squares-four"></i> Core Architectural Components</div>
+    
+    <div class="component">
+      <div class="comp-left">
+        <div class="comp-icon"><i class="ph ph-rocket-launch"></i></div>
+        <div><div class="comp-name">Argo Rollouts</div><div class="comp-desc">Progressive Canary deployments</div></div>
+      </div>
+      <span class="status-pill">Healthy</span>
+    </div>
+    
+    <div class="component">
+      <div class="comp-left">
+        <div class="comp-icon"><i class="ph ph-activity"></i></div>
+        <div><div class="comp-name">Prometheus SLOs</div><div class="comp-desc">Mathematical error budget burn rates</div></div>
+      </div>
+      <span class="status-pill">Healthy</span>
+    </div>
+    
+    <div class="component">
+      <div class="comp-left">
+        <div class="comp-icon"><i class="ph ph-lock-key"></i></div>
+        <div><div class="comp-name">Checkov & OPA Gatekeeper</div><div class="comp-desc">IaC Policy & admission enforcement</div></div>
+      </div>
+      <span class="status-pill">Healthy</span>
+    </div>
+    
+    <div class="component">
+      <div class="comp-left">
+        <div class="comp-icon"><i class="ph ph-coin"></i></div>
+        <div><div class="comp-name">Infracost FinOps</div><div class="comp-desc">Automated PR cost estimation</div></div>
+      </div>
+      <span class="status-pill" style="color:#3b82f6; background:rgba(59,130,246,0.1); border-color:rgba(59,130,246,0.2);">Monitoring</span>
+    </div>
+    
+    <div class="component">
+      <div class="comp-left">
+        <div class="comp-icon"><i class="ph ph-floppy-disk-back"></i></div>
+        <div><div class="comp-name">Velero</div><div class="comp-desc">Automated cluster state backups</div></div>
+      </div>
+      <span class="status-pill">Scheduled</span>
+    </div>
+    
+  </div>
+
+  <div class="section">
+    <div class="section-title"><i class="ph ph-stack"></i> Technology Stack</div>
+    <div class="stack-grid">
+      <div class="stack-item"><div class="stack-layer">IaC</div><div class="stack-tool">Terraform</div></div>
+      <div class="stack-item"><div class="stack-layer">Orchestration</div><div class="stack-tool">EKS</div></div>
+      <div class="stack-item"><div class="stack-layer">GitOps</div><div class="stack-tool">Argo CD</div></div>
+      <div class="stack-item"><div class="stack-layer">CI/CD</div><div class="stack-tool">GitHub Actions</div></div>
+      <div class="stack-item"><div class="stack-layer">Security</div><div class="stack-tool">Trivy + Checkov</div></div>
+      <div class="stack-item"><div class="stack-layer">Observability</div><div class="stack-tool">Prometheus SLOs</div></div>
+      <div class="stack-item"><div class="stack-layer">Backups</div><div class="stack-tool">Velero + S3</div></div>
+    </div>
+  </div>
+
+  <div class="links">
+    <a href="https://github.com/nvojvodic-white/dev-platform" target="_blank" class="btn btn-primary"><i class="ph ph-github-logo"></i> View on GitHub</a>
+  </div>
 </div>
-<div class="section">
-<div class="section-title">Platform components</div>
-<div class="component"><div class="comp-left"><div class="comp-icon">&#128260;</div><div><div class="comp-name">Argo CD</div><div class="comp-desc">GitOps continuous delivery</div></div></div><span class="status-pill">Healthy</span></div>
-<div class="component"><div class="comp-left"><div class="comp-icon">&#128202;</div><div><div class="comp-name">Prometheus + Grafana</div><div class="comp-desc">Metrics and dashboards</div></div></div><span class="status-pill">Healthy</span></div>
-<div class="component"><div class="comp-left"><div class="comp-icon">&#9878;</div><div><div class="comp-name">OPA Gatekeeper</div><div class="comp-desc">Policy enforcement</div></div></div><span class="status-pill">Healthy</span></div>
-<div class="component"><div class="comp-left"><div class="comp-icon">&#128274;</div><div><div class="comp-name">Network policies</div><div class="comp-desc">Zero-trust pod networking</div></div></div><span class="status-pill">Enforced</span></div>
-<div class="component"><div class="comp-left"><div class="comp-icon">&#128190;</div><div><div class="comp-name">Velero</div><div class="comp-desc">Automated cluster backups</div></div></div><span class="status-pill">Scheduled</span></div>
-<div class="component"><div class="comp-left"><div class="comp-icon">&#127760;</div><div><div class="comp-name">AWS Load Balancer</div><div class="comp-desc">Public ALB ingress</div></div></div><span class="status-pill">Active</span></div>
-</div>
-<div class="section">
-<div class="section-title">Stack</div>
-<div class="stack-grid">
-<div class="stack-item"><div class="stack-layer">IaC</div>Terraform</div>
-<div class="stack-item"><div class="stack-layer">State</div>S3 + DynamoDB</div>
-<div class="stack-item"><div class="stack-layer">Orchestration</div>Kubernetes</div>
-<div class="stack-item"><div class="stack-layer">GitOps</div>Argo CD</div>
-<div class="stack-item"><div class="stack-layer">CI/CD</div>GitHub Actions</div>
-<div class="stack-item"><div class="stack-layer">Security</div>Trivy + OPA</div>
-<div class="stack-item"><div class="stack-layer">Observability</div>Prometheus</div>
-<div class="stack-item"><div class="stack-layer">Backups</div>Velero</div>
-</div>
-</div>
-<div class="links">
-<a class="link-btn" href="https://github.com/nvojvodic-white/dev-platform" target="_blank">View on GitHub</a>
-</div>
+
+<script>
+  // Simulated Live Telemetry Scripts to make the dashboard feel alive
+  
+  // 1. Simulate Karpenter Node Fluctuation (3 to 5 nodes scaling)
+  const nodeEl = document.getElementById('karpenter-out');
+  setInterval(() => {
+    if(Math.random() > 0.7) {
+      let currentString = nodeEl.innerText;
+      let current = parseInt(currentString.split(' ')[0]);
+      if(isNaN(current)) current = 3;
+      let next = current + (Math.random() > 0.5 ? 1 : -1);
+      if(next < 3) next = 3;
+      if(next > 5) next = 5;
+      
+      // Animate update
+      nodeEl.innerHTML = `<span class="changed">${next}</span> <span class="card-unit">nodes</span>`;
+      setTimeout(() => { nodeEl.innerHTML = `${next} <span class="card-unit">nodes</span>`; }, 200);
+    }
+  }, 4000);
+
+  // 2. Simulate Latency Jitter (40ms - 46ms)
+  const latEl = document.getElementById('slo-lat');
+  setInterval(() => {
+    let nextLat = Math.floor(Math.random() * (46 - 40 + 1) + 40);
+    latEl.classList.add('changed');
+    latEl.innerText = nextLat;
+    setTimeout(() => { latEl.classList.remove('changed'); }, 200);
+  }, 2500);
+</script>
 </body>
 </html>
