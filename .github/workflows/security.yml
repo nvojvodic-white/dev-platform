@@ -23,3 +23,19 @@ jobs:
         format: table
         exit-code: 0
         severity: CRITICAL,HIGH
+
+  checkov:
+    name: Checkov IaC Scan
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Run Checkov action
+      uses: bridgecrewio/checkov-action@master
+      with:
+        directory: .
+        framework: terraform,kubernetes
+        quiet: true
+        soft_fail: true

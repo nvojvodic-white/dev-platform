@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dev-platform</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fafafa;color:#111;padding:2rem;max-width:800px;margin:0 auto}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:3px 10px;border-radius:20px;margin-bottom:12px;background:#dcfce7;color:#166534}
+.dot{width:7px;height:7px;border-radius:50%;background:#16a34a;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+h1{font-size:28px;font-weight:600;margin-bottom:6px}
+.subtitle{font-size:15px;color:#555;line-height:1.6;margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid #e5e5e5}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:2rem}
+.card{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1rem 1.25rem}
+.card-label{font-size:12px;color:#888;margin-bottom:4px}
+.card-value{font-size:22px;font-weight:600}
+.card-sub{font-size:12px;color:#888;margin-top:2px}
+.section{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem}
+.section-title{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+.component{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f0f0f0}
+.component:last-child{border-bottom:none}
+.comp-left{display:flex;align-items:center;gap:10px}
+.comp-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;background:#f5f5f5}
+.comp-name{font-size:14px;font-weight:500}
+.comp-desc{font-size:12px;color:#888}
+.status-pill{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;background:#dcfce7;color:#166534}
+.stack-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.stack-item{background:#f9f9f9;border-radius:8px;padding:8px 12px;font-size:13px}
+.stack-layer{font-size:11px;color:#888;margin-bottom:2px}
+.links{display:flex;gap:10px;margin-top:1.5rem;flex-wrap:wrap}
+.link-btn{font-size:13px;padding:8px 16px;border-radius:8px;border:1px solid #e5e5e5;color:#111;text-decoration:none;background:#fff}
+</style>
+</head>
+<body>
+<div class="badge"><div class="dot"></div> All systems operational</div>
+<h1>dev-platform</h1>
+<p class="subtitle">Production-grade Internal Developer Platform on AWS. Built with Terraform, Kubernetes, and GitOps. All infrastructure is managed as code.</p>
+<div class="grid">
+<div class="card"><div class="card-label">Kubernetes version</div><div class="card-value">1.35</div><div class="card-sub">EKS managed</div></div>
+<div class="card"><div class="card-label">Cloud provider</div><div class="card-value">AWS</div><div class="card-sub">us-east-1</div></div>
+<div class="card"><div class="card-label">Node autoscaling</div><div class="card-value">1 - 4</div><div class="card-sub">Cluster Autoscaler</div></div>
+<div class="card"><div class="card-label">Backup retention</div><div class="card-value">7 days</div><div class="card-sub">Velero + S3</div></div>
+</div>
+<div class="section">
+<div class="section-title">Platform components</div>
+<div class="component"><div class="comp-left"><div class="comp-icon">&#128260;</div><div><div class="comp-name">Argo CD</div><div class="comp-desc">GitOps continuous delivery</div></div></div><span class="status-pill">Healthy</span></div>
+<div class="component"><div class="comp-left"><div class="comp-icon">&#128202;</div><div><div class="comp-name">Prometheus + Grafana</div><div class="comp-desc">Metrics and dashboards</div></div></div><span class="status-pill">Healthy</span></div>
+<div class="component"><div class="comp-left"><div class="comp-icon">&#9878;</div><div><div class="comp-name">OPA Gatekeeper</div><div class="comp-desc">Policy enforcement</div></div></div><span class="status-pill">Healthy</span></div>
+<div class="component"><div class="comp-left"><div class="comp-icon">&#128274;</div><div><div class="comp-name">Network policies</div><div class="comp-desc">Zero-trust pod networking</div></div></div><span class="status-pill">Enforced</span></div>
+<div class="component"><div class="comp-left"><div class="comp-icon">&#128190;</div><div><div class="comp-name">Velero</div><div class="comp-desc">Automated cluster backups</div></div></div><span class="status-pill">Scheduled</span></div>
+<div class="component"><div class="comp-left"><div class="comp-icon">&#127760;</div><div><div class="comp-name">AWS Load Balancer</div><div class="comp-desc">Public ALB ingress</div></div></div><span class="status-pill">Active</span></div>
+</div>
+<div class="section">
+<div class="section-title">Stack</div>
+<div class="stack-grid">
+<div class="stack-item"><div class="stack-layer">IaC</div>Terraform</div>
+<div class="stack-item"><div class="stack-layer">State</div>S3 + DynamoDB</div>
+<div class="stack-item"><div class="stack-layer">Orchestration</div>Kubernetes</div>
+<div class="stack-item"><div class="stack-layer">GitOps</div>Argo CD</div>
+<div class="stack-item"><div class="stack-layer">CI/CD</div>GitHub Actions</div>
+<div class="stack-item"><div class="stack-layer">Security</div>Trivy + OPA</div>
+<div class="stack-item"><div class="stack-layer">Observability</div>Prometheus</div>
+<div class="stack-item"><div class="stack-layer">Backups</div>Velero</div>
+</div>
+</div>
+<div class="links">
+<a class="link-btn" href="https://github.com/nvojvodic-white/dev-platform" target="_blank">View on GitHub</a>
+</div>
+</body>
+</html>
