@@ -16,8 +16,9 @@ spec:
       serviceAccountName: sample-app
       containers:
       - name: sample-app
-        image: amazon/aws-cli:latest
-        command: ["sleep", "3600"]
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
         resources:
           requests:
             memory: "64Mi"
