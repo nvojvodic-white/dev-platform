@@ -1,0 +1,32 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: sample-app-slos
+  namespace: monitoring
+  labels:
+    prometheus: k8s
+    role: alert-rules
+spec:
+  groups:
+  - name: sample-app-slos
+    rules:
+    - record: sli:latency:p99
+      expr: |
+        histogram_quantile(0.99, sum(rate(aws_applicationelb_http_request_duration_seconds_bucket{ingress="sample-app"}[5m])) by (le))
+    
+    - record: sli:availability:ratio
+      expr: |
+        sum(rate(aws_applicationelb_httpcode_target_2xx_count{ingress="sample-app"}[5m]))
+        /
+        sum(rate(aws_applicationelb_http_requests_total{ingress="sample-app"}[5m]))
+    
+    - alert: SampleAppAvailabilitySLOBurnHigh
+      expr: |
+        sli:availability:ratio < 0.999
+      for: 5m
+      labels:
+        severity: critical
+        pager: "true"
+      annotations:
+        summary: "High Error Budget Burn Rate for Sample App"
+        description: "The availability of the sample app has dropped below the 99.9% objective for the last 5 minutes. High error budget burn!"
