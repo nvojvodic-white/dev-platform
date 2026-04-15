@@ -49,6 +49,8 @@ A production-grade Internal Developer Platform built on AWS, demonstrating infra
 | Cloud Provider | AWS |
 
 ## Repository Structure
+
+```
 dev-platform/
 ├── bin/
 │   └── create-service.sh  # Golden Path generator
@@ -74,6 +76,7 @@ dev-platform/
 │   └── network-policies/  # Default deny + allow rules
 └── docs/
     └── runbook.md         # SEV-1/2/3 Incident Response Protocol
+```
 
 ## How to Deploy
 
