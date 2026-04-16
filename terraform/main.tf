@@ -15,6 +15,11 @@ module "eks" {
   private_subnets = module.vpc.private_subnets
 }
 
+import {
+  to = aws_eks_access_entry.admin
+  id = "dev-platform-dev:arn:aws:iam::375976227140:user/terraform-admin"
+}
+
 resource "aws_eks_access_entry" "admin" {
   cluster_name  = module.eks.cluster_name
   principal_arn = "arn:aws:iam::375976227140:user/terraform-admin"
